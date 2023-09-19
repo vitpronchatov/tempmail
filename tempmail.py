@@ -121,7 +121,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
             message_subject = email.get_message_subject()
         except:
             print("Ждем еще 20 секунд...")
-            sleep(20)
+            time.sleep(20)
             message = email.get_message_by_id(email.get_message_id())
             message_subject = email.get_message_subject()
         if message_subject == "Подтвердите e-mail":
