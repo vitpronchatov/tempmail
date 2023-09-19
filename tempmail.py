@@ -85,9 +85,6 @@ class Mail:
         return self.mail
 
 
-#email_is_valid = False
-
-
 def check_email(email_name):
     response = requests.post('https://hidemy.io/ru/demo/success/', data={
         "demo_mail": f"{email_name}"})
@@ -112,17 +109,10 @@ if 'Ваша электронная почта' in requests.get(url).text:
 
         email_is_valid = check_email(email_name)
 
-        key = input("Сгенерировать новую почту?(y/n)")
-        if key == "y":
+        while email_is_valid is not True:
             email = Mail()
             email_name = email.get_message_email_name()
             email_is_valid = check_email(email_name)
-        elif key == "n":
-            pass
-        else:
-            print("Вы нажали неправильную клавишу...")
-            time.sleep(2)
-            break
 
         if email_is_valid:
             print("Ждем 70 секунд...")
@@ -149,23 +139,21 @@ if 'Ваша электронная почта' in requests.get(url).text:
         else:
             break
 
-        input("Нажмите Enter для получения тестового кода...")
+        print("Получение тестового кода...")
+        time.sleep(15)
 
         message = email.get_message_by_id(email.get_message_id())
         print("Ваш тестовый код:")
         print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
-        key = input("Записать код в файл?(y/n)")
-        if key == "y":
-            file = open("codes.txt", 'a+')
-            file.write('\n')
-            file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
-            file.close()
-        else:
-            continue
 
-        key = input("Нажмите q для выхода из программы или любую другую клавишу для продолжения работы программы...")
-        if key == "q":
-            break
+        file = open("codes.txt", 'a+')
+        file.write('\n')
+        file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+        file.close()
+
+        #key = input("Нажмите q для выхода из программы или любую другую клавишу для продолжения работы программы...")
+        #if key == "q":
+        #    break
 else:
     print('Невозможно получить тестовый период')
     input()
