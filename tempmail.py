@@ -85,7 +85,7 @@ class Mail:
         return self.mail
 
 
-email_is_valid = False
+#email_is_valid = False
 
 
 def check_email(email_name):
@@ -95,9 +95,11 @@ def check_email(email_name):
     if 'Ваш код выслан на почту' in response.text:
         email_is_valid = True
         print("Указанная почта подходит для получения тестового периода!")
+        return email_is_valid
     else:
         email_is_valid = False
         print('Указанная почта не подходит для получения тестового периода!')
+        return email_is_valid
 
 
 # Основной алгоритм получения кодов hidemy.name
@@ -105,17 +107,16 @@ url = 'https://hidemy.io/ru/demo/'
 
 if 'Ваша электронная почта' in requests.get(url).text:
     while True:
-        print('\n' * 100)
         email = Mail()
         email_name = email.get_message_email_name()
 
-        check_email(email_name)
+        email_is_valid = check_email(email_name)
 
         key = input("Сгенерировать новую почту?(y/n)")
         if key == "y":
             email = Mail()
             email_name = email.get_message_email_name()
-            check_email(email_name)
+            email_is_valid = check_email(email_name)
         elif key == "n":
             pass
         else:
