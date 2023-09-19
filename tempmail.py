@@ -150,10 +150,6 @@ if 'Ваша электронная почта' in requests.get(url).text:
         file.write('\n')
         file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
         file.close()
-
-        #key = input("Нажмите q для выхода из программы или любую другую клавишу для продолжения работы программы...")
-        #if key == "q":
-        #    break
 else:
     print('Невозможно получить тестовый период')
     input()
