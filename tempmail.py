@@ -146,7 +146,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
         print("Ваш тестовый код:")
         print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
 
-        file = open("codes.txt", 'a+')
+        file = open("/content/drive/MyDrive/Colab Notebooks/codes.txt", 'a+')
         file.write('\n')
         file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
         file.close()
