@@ -103,53 +103,49 @@ def check_email(email_name):
 url = 'https://hidemy.io/ru/demo/'
 
 if 'Ваша электронная почта' in requests.get(url).text:
-    while True:
+    email = Mail()
+    email_name = email.get_message_email_name()
+
+    email_is_valid = check_email(email_name)
+
+    while email_is_valid is not True:
         email = Mail()
         email_name = email.get_message_email_name()
-
         email_is_valid = check_email(email_name)
 
-        while email_is_valid is not True:
-            email = Mail()
-            email_name = email.get_message_email_name()
-            email_is_valid = check_email(email_name)
-
-        if email_is_valid:
-            print("Ждем 70 секунд...")
-            time.sleep(70)
-            message = email.get_message_by_id(email.get_message_id())
-            message_subject = email.get_message_subject()
-            if message_subject == "Подтвердите e-mail":
-                ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
-            print("Ссылка для подтверждения e-mail: ")
-            print(ver_link)
-
-            while True:
-                try:
-                    response = requests.get(ver_link)
-                    if 'Спасибо' in response.text:
-                        print('Почта подтверждена. Код отправлен на вашу почту!')
-                        break
-                    else:
-                        ver_link = input('Ссылка невалидная, повторите попытку: ')
-                except:
-                    ver_link = input('Ссылка невалидная, повторите попытку: ')
-                    continue
-                input("Нажмите Enter для продолжения...")
-        else:
-            break
-
-        print("Получение тестового кода...")
-        time.sleep(15)
-
+    if email_is_valid:
+        print("Ждем 70 секунд...")
+        time.sleep(70)
         message = email.get_message_by_id(email.get_message_id())
-        print("Ваш тестовый код:")
-        print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+        message_subject = email.get_message_subject()
+        if message_subject == "Подтвердите e-mail":
+            ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
+        print("Ссылка для подтверждения e-mail: ")
+        print(ver_link)
 
-        file = open("/content/drive/MyDrive/Colab Notebooks/codes.txt", 'a+')
-        file.write('\n')
-        file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
-        file.close()
+        while True:
+            try:
+                response = requests.get(ver_link)
+                if 'Спасибо' in response.text:
+                    print('Почта подтверждена. Код отправлен на вашу почту!')
+                    break
+                else:
+                    ver_link = input('Ссылка невалидная, повторите попытку: ')
+            except:
+                ver_link = input('Ссылка невалидная, повторите попытку: ')
+                continue
+            input("Нажмите Enter для продолжения...")
+
+    print("Получение тестового кода...")
+    time.sleep(15)
+
+    message = email.get_message_by_id(email.get_message_id())
+    print("Ваш тестовый код:")
+    print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+
+    file = open("/content/drive/MyDrive/Colab Notebooks/codes.txt", 'a+')
+    file.write('\n')
+    file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+    file.close()
 else:
     print('Невозможно получить тестовый период')
-    input()
