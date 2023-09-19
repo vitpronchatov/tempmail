@@ -114,8 +114,8 @@ if 'Ваша электронная почта' in requests.get(url).text:
         email_is_valid = check_email(email_name)
 
     if email_is_valid:
-        print("Ждем 70 секунд...")
-        time.sleep(70)
+        print("Ждем 60 секунд...")
+        time.sleep(60)
         message = email.get_message_by_id(email.get_message_id())
         message_subject = email.get_message_subject()
         if message_subject == "Подтвердите e-mail":
@@ -137,7 +137,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
             input("Нажмите Enter для продолжения...")
 
     print("Получение тестового кода...")
-    time.sleep(15)
+    time.sleep(10)
 
     message = email.get_message_by_id(email.get_message_id())
     print("Ваш тестовый код:")
