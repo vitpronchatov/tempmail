@@ -152,6 +152,9 @@ if 'Ваша электронная почта' in requests.get(url).text:
     file = open("/content/drive/MyDrive/Colab Notebooks/codes.txt", 'a+')
     file.write('\n')
     file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+    for num, line in enumerate(file, 1):
+        if message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32] in line:
+            print('Сгенерировано кодов: ' + num)
     file.close()
 else:
     print('Невозможно получить тестовый период')
