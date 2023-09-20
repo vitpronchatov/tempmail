@@ -155,7 +155,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
     lines = 0
     for line in file:
         lines += 1
-        print('Сгенерировано кодов: ' + str(lines))
+    print('Сгенерировано кодов: ' + str(lines))
     file.close()
 else:
     print('Невозможно получить тестовый период')
