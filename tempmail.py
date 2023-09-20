@@ -1,3 +1,4 @@
+import sys
 import requests
 import json
 import time
@@ -127,11 +128,11 @@ if 'Ваша электронная почта' in requests.get(url).text:
                 message_subject = email.get_message_subject()
             except:
                 print("К сожалению получить письмо не получилось...")
+                sys.exit()
         if message_subject == "Подтвердите e-mail":
             ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
         else:
             print("Сообщение не получено...")
-            ver_link = -1
         print("Ссылка для подтверждения e-mail: ")
         print(ver_link)
 
