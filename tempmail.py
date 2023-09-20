@@ -122,10 +122,16 @@ if 'Ваша электронная почта' in requests.get(url).text:
         except:
             print("Ждем еще 20 секунд...")
             time.sleep(20)
-            message = email.get_message_by_id(email.get_message_id())
-            message_subject = email.get_message_subject()
+            try:
+                message = email.get_message_by_id(email.get_message_id())
+                message_subject = email.get_message_subject()
+            except:
+                print("К сожалению получить письмо не получилось...")
         if message_subject == "Подтвердите e-mail":
             ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
+        else:
+            print("Сообщение не получено...")
+            ver_link = -1
         print("Ссылка для подтверждения e-mail: ")
         print(ver_link)
 
