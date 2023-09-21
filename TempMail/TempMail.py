@@ -130,13 +130,9 @@ class TempMail:
             emails = []
             for email in data["email"]:
                 # Some emails may not have html, so we will check for that
-                if "html" in email:
-                    emails.append(
-                        Email(email["from"], email["to"], email["subject"], email["body"], email["html"], email["date"]))
-                else:
-                    emails.append(
-                        Email(email["from"], email["to"], email["subject"], email["body"], None, email["date"]))
-            return data["subject"]
+                emails.append(
+                    Email(email["subject"]))
+            return emails
 
     """
     checkCustomInbox checks if there are any emails in a custom inbox
