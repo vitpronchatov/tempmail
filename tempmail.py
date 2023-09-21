@@ -68,7 +68,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
             input("Нажмите Enter для продолжения...")
 
     print("Получение тестового кода...")
-    time.sleep(10)
+    time.sleep(20)
 
     message = TempMail.getEmails(tmp, inbox=email)
     print(message.subject)
