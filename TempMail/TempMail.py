@@ -106,7 +106,7 @@ class TempMail:
                 else:
                     emails.append(
                         Email(email["from"], email["to"], email["subject"], email["body"], None, email["date"]))
-            return emails
+            return data
 
     def getEmails_subject(self, inbox):
         if isinstance(inbox, Inbox):
