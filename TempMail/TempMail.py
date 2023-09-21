@@ -132,7 +132,7 @@ class TempMail:
                 # Some emails may not have html, so we will check for that
                 emails.append(
                     Email(email["subject"], email["body"]))
-            return data
+            return Email(email["subject"])
 
     """
     checkCustomInbox checks if there are any emails in a custom inbox
