@@ -122,11 +122,18 @@ class TempMail:
             if data["token"] == "invalid":
                 raise Exception("Invalid Token")
 
-        for email in data["email"]:
-            if "html" in email:
-                new_email = Email(email["from"], email["to"], email["subject"], email["body"], email["html"],
-                    email["date"])
-                return new_email.subject
+        if data["email"] is None:
+            return ["None"]
+        else:
+            for email in data["email"]:
+                if "html" in email:
+                    new_email = Email(email["from"], email["to"], email["subject"], email["body"], email["html"],
+                                      email["date"])
+                    return new_email.subject
+                else:
+                    new_email = Email(email["from"], email["to"], email["subject"], email["body"], None,
+                                      email["date"])
+                    return new_email.subject
 
     """
     checkCustomInbox checks if there are any emails in a custom inbox
