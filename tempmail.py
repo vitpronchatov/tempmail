@@ -31,7 +31,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
 
     while email_is_valid is not True:
         tmp = TempMail()
-        email = tmp.generateInbox(tmp, rush=True)
+        email = tmp.generateInbox(tmp)
         email_is_valid = check_email(email.address)
 
     if email_is_valid:

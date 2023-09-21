@@ -57,7 +57,7 @@ class TempMail:
     > domain = None will generate an inbox with a random domain
     """
 
-    def generateInbox(self, rush=False, domain=None):
+    def generateInbox(self, rush=True, domain=None):
         url = "/generate"
         # with rush mode: /generate/rush
         # with domain: /generate/<domain>
