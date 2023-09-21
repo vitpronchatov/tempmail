@@ -24,7 +24,7 @@ url = 'https://hidemy.io/ru/demo/'
 
 if 'Ваша электронная почта' in requests.get(url).text:
     tmp = TempMail()
-    email = tmp.generateInbox(tmp, rush=True)
+    email = tmp.generateInbox(tmp)
     print(email.address)
 
     email_is_valid = check_email(email.address)
