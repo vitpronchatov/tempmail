@@ -1,132 +1,169 @@
+import sys
 import requests
 import json
-from TempMail.Email import Email
-from TempMail.Inbox import Inbox
+import time
 
 
-class TempMail:
-    global BASE_URL
-    BASE_URL = "https://api.tempmail.lol"
+class Mail:
 
-    # class vars
-    auth_id = None
-    auth_token = None
+    def __init__(self, m=None):
 
-    # constructor
-    def __init__(self, auth_id=None, auth_token=None):
-        TempMail.auth_id = auth_id
-        TempMail.auth_token = auth_token
+        """Процедура инициализации"""
 
-    """
-    Make a request to the tempmail.lol api with a given endpoint
-    The content of the request is a json string and is returned as a string object
-    """
-
-    def makeHTTPRequest(self, endpoint):
-        headers = {
-            "User-Agent": "TempMailPythonAPI/1.0",
-            "Accept": "application/json"
-        }
-
-        if TempMail.auth_id is not None and TempMail.auth_token is not None:
-            headers["X-BananaCrumbs-ID"] = TempMail.auth_id
-            headers["X-BananaCrumbs-MFA"] = TempMail.auth_token
-
-        connection = requests.get(BASE_URL + endpoint, headers=headers)
-
-        # Check some error codes
-        # This includes rate limits, auth errors, and server errors
-        if connection.status_code == 429:  # Rate limit
-            raise Exception("TempMail Rate Limit: " + connection.text)
-        elif connection.status_code == 402:  # No time left on account
-            raise Exception("BananaCrumbs ID has no time left.  See https://tempmail.lol/pricing.html for more info")
-        elif 400 <= connection.status_code < 500:  # Client error
-            raise Exception("HTTP Error: " + str(connection.status_code))
-        elif 500 <= connection.status_code < 600:  # Server error
-            raise Exception("TempMail Server returned an error: " + str(
-                connection.status_code) + " " + connection.text + " please report this.")
-
-        response = connection.text
-
-        return response
-
-    """
-    GenerateInbox will generate an inbox with an address and a token
-    and returns an Inbox object
-    > rush = False will generate a normal inbox with no rush (https://tempmail.lol/news/2022/08/03/introducing-rush-mode-for-tempmail/)
-    > domain = None will generate an inbox with a random domain
-    """
-
-    def generateInbox(self, rush=False, domain=None):
-        url = "/generate"
-        # with rush mode: /generate/rush
-        # with domain: /generate/<domain>
-        # these two cannot be combined.  If both are true, only rush will be used
-
-        if rush:
-            url = url + "/rush"
-        elif domain is not None:
-            url = url + "/" + domain
-
-        s = TempMail.makeHTTPRequest(self, url)
-        data = json.loads(s)
-        return Inbox(data["address"], data["token"])
-
-    """
-    getEmail gets the emails from an inbox object
-    and returns a list of Email objects
-    """
-
-    def getEmails(self, inbox):
-        # if inbox is an instance of Inbox object, get the token, otherwise inbox is a string
-        if isinstance(inbox, Inbox):
-            token = inbox.token
+        a = "https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1"
+        if m is None:
+            self.mail = json.loads(requests.post(a).text)[0]
         else:
-            token = inbox
+            self.mail = m
+        print(self.mail)
 
-        s = TempMail.makeHTTPRequest(self, "/auth/" + token)
-        data = json.loads(s)
+    def check_messages(self):
 
-        # Raise an exception if the token is invalid
-        if "token" in s and "token" in data:
-            if data["token"] == "invalid":
-                raise Exception("Invalid Token")
+        """Процедура проверки входящего сообщения"""
 
-        # if no emails are found, return an empty list
-        # else return a list of email
-        if data["email"] is None:
-            return ["None"]
+        a = self.mail.split('@')
+        b = json.loads(
+            requests.get(f"https://www.1secmail.com/api/v1/?action=getMessages&login={a[0]}&domain={a[1]}").text)
+        lis = []
+        for i in b:
+            lis.append('|Id: ' + str(i["id"]) + "\n" + "|From: " + i["from"] + "\n" + "|Subject: " + i[
+                "subject"] + "\n" + "|Date: " + i["date"])
+        return "\n\n".join(lis)
+
+    def get_message_id(self):
+
+        """Получение идентификатора сообщения"""
+
+        a = self.mail.split('@')
+        b = json.loads(
+            requests.get(f"https://www.1secmail.com/api/v1/?action=getMessages&login={a[0]}&domain={a[1]}").text)
+        try:
+            return b[0]['id']
+        except:
+            print("No messages!")
+
+    def get_message_subject(self):
+
+        """Получение заголовка сообщения"""
+
+        a = self.mail.split('@')
+        b = json.loads(
+            requests.get(f"https://www.1secmail.com/api/v1/?action=getMessages&login={a[0]}&domain={a[1]}").text)
+        try:
+            return b[0]['subject']
+        except:
+            print("No messages!")
+
+    def get_message_by_id(self, id):
+
+        """Процедура открытия конкретного сообщения (по айди)"""
+
+        b = self.mail.split('@')
+        d = json.loads(requests.get(
+            f"https://www.1secmail.com/api/v1/?action=readMessage&login={b[0]}&domain={b[1]}&id={id}").text)
+        html = d["htmlBody"]
+        body = d["body"]
+        if len(html) > 0:
+            html = d["htmlBody"]
         else:
-            emails = []
-            for email in data["email"]:
-                # Some emails may not have html, so we will check for that
-                if "html" in email:
-                    emails.append(
-                        Email(email["from"], email["to"], email["subject"], email["body"], email["html"], email["date"]))
+            html = "None"
+        attach = d["attachments"]
+        if len(attach) > 0:
+            lis = []
+            attach = d["attachments"]
+            for i in attach:
+                lis.append(
+                    f'https://www.1secmail.com/api/v1/?action=download&login={b[0]}&domain={b[1]}&id={id}&file={i["filename"]}')
+            attach = ", ".join(lis)
+        else:
+            attach = "None"
+        c = '|Id: ' + str(d["id"]) + "\n" + "|From: " + d["from"] + "\n" + "|Subject: " + d[
+            "subject"] + "\n" + "|Date: " + d["date"] + "\n" + "|Body: " + body + "\n|TextBody: " + d[
+                "textBody"] + "\n" + "|HtmlBody: " + html + "\n" + "|Attachments: " + attach
+        return c
+
+    def get_message_email_name(self):
+        return self.mail
+
+
+def check_email(email_name):
+    response = requests.post('https://hidemy.io/ru/demo/success/', data={
+        "demo_mail": f"{email_name}"})
+
+    if 'Ваш код выслан на почту' in response.text:
+        email_is_valid = True
+        print("Указанная почта подходит для получения тестового периода!")
+        return email_is_valid
+    else:
+        email_is_valid = False
+        print('Указанная почта не подходит для получения тестового периода!')
+        return email_is_valid
+
+
+# Основной алгоритм получения кодов hidemy.name
+url = 'https://hidemy.io/ru/demo/'
+
+if 'Ваша электронная почта' in requests.get(url).text:
+    email = Mail()
+    email_name = email.get_message_email_name()
+
+    email_is_valid = check_email(email_name)
+
+    while email_is_valid is not True:
+        email = Mail()
+        email_name = email.get_message_email_name()
+        email_is_valid = check_email(email_name)
+
+    if email_is_valid:
+        print("Ждем 70 секунд...")
+        time.sleep(70)
+        try:
+            message = email.get_message_by_id(email.get_message_id())
+            message_subject = email.get_message_subject()
+        except:
+            print("Ждем еще 20 секунд...")
+            time.sleep(20)
+            try:
+                message = email.get_message_by_id(email.get_message_id())
+                message_subject = email.get_message_subject()
+            except:
+                print("К сожалению получить письмо не получилось...")
+                sys.exit()
+        if message_subject == "Подтвердите e-mail":
+            ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
+        else:
+            print("Сообщение не получено...")
+        print("Ссылка для подтверждения e-mail: ")
+        print(ver_link)
+
+        while True:
+            try:
+                response = requests.get(ver_link)
+                if 'Спасибо' in response.text:
+                    print('Почта подтверждена. Код отправлен на вашу почту!')
+                    break
                 else:
-                    emails.append(
-                        Email(email["from"], email["to"], email["subject"], email["body"], None, email["date"]))
-            return emails
+                    ver_link = input('Ссылка невалидная, повторите попытку: ')
+            except:
+                ver_link = input('Ссылка невалидная, повторите попытку: ')
+                continue
+            input("Нажмите Enter для продолжения...")
 
-    """
-    checkCustomInbox checks if there are any emails in a custom inbox
-    and returns a list of Email objects
-    > domain Required
-    > token Required
-    """
-    def checkCustomInbox(self, domain, token):
-        url = "/custom/" + token + "/" + domain
+    print("Получение тестового кода...")
+    time.sleep(10)
 
-        s = TempMail.makeHTTPRequest(self, url)
-        data = json.loads(s)
+    message = email.get_message_by_id(email.get_message_id())
+    print("Ваш тестовый код:")
+    print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
 
-        # There is no way to check if the token is invalid
-        # so we will just return an empty list if there are no emails
-        if data["email"] is None:
-            return []
-        else:
-            emails = []
-            for email in data["email"]:
-                emails.append(
-                    Email(email["from"], email["to"], email["subject"], email["body"], email["html"], email["date"]))
-            return emails
+    lines = 0
+    file = open("/content/drive/MyDrive/Colab Notebooks/codes.txt", 'a+')
+    file.write('\n')
+    file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+    with open("/content/drive/MyDrive/Colab Notebooks/codes.txt") as file:
+        for line in file:
+            lines += 1
+        print('Сгенерировано кодов: ' + str(lines))
+    file.close()
+else:
+    print('Невозможно получить тестовый период')
