@@ -71,7 +71,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
     time.sleep(20)
 
     message = TempMail.getEmails(tmp, inbox=email)
-    print(message.subject)
+    print(message.recipient)
     #print("Ваш тестовый код:")
     # print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
     #
