@@ -37,7 +37,8 @@ if 'Ваша электронная почта' in requests.get(url).text:
     print("Ждем 100 секунд...")
     time.sleep(100)
     message = TempMail.getEmails(tmp, inbox=email)
-    print(message)
+    print(message.subject)
+    print(message.body.find('Подтвердить'))
 
     # if email_is_valid:
     #     print("Ждем 70 секунд...")
@@ -52,7 +53,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
     #         except:
     #             print("К сожалению получить письмо не получилось...")
     #             sys.exit()
-    #     if message['subject'] == "Подтвердите e-mail":
+    #     if message.subject == "Подтвердите e-mail":
     #         ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
     #     else:
     #         print("Сообщение не получено...")

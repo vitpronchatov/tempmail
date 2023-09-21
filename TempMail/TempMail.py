@@ -110,11 +110,11 @@ class TempMail:
                 if "html" in email:
                     new_email = Email(email["from"], email["to"], email["subject"], email["body"], email["html"],
                                       email["date"])
-                    return new_email.subject
+                    return new_email
                 else:
                     new_email = Email(email["from"], email["to"], email["subject"], email["body"], None,
                                       email["date"])
-                    return new_email.subject
+                    return new_email
 
     """
     checkCustomInbox checks if there are any emails in a custom inbox
