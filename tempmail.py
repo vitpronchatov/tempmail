@@ -34,8 +34,8 @@ if 'Ваша электронная почта' in requests.get(url).text:
         email = tmp.generateInbox(tmp)
         email_is_valid = check_email(email.address)
 
-    print("Ждем 70 секунд...")
-    time.sleep(70)
+    print("Ждем 100 секунд...")
+    time.sleep(100)
     message = TempMail.getEmails(tmp, inbox=email)
     print(message.subject)
     print(message.body[message.body.find('Подтвердить') + 323: message.body.find('Подтвердить') + 362])
