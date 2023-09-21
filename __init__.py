@@ -1,1 +1,0 @@
-from TempMail.TempMail import TempMail
