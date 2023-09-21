@@ -136,7 +136,7 @@ class TempMail:
                 else:
                     emails.append(
                         Email(email["from"], email["to"], email["subject"], email["body"], None, email["date"]))
-            return data["email"]["subject"]
+            return data[1]["subject"]
 
     """
     checkCustomInbox checks if there are any emails in a custom inbox
