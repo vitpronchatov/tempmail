@@ -34,61 +34,54 @@ if 'Ваша электронная почта' in requests.get(url).text:
         email = tmp.generateInbox(tmp)
         email_is_valid = check_email(email.address)
 
-    print("Ждем 70 секунд...")
-    time.sleep(70)
-    message = TempMail.getEmails(tmp, inbox=email)
-    print(message)
+    if email_is_valid:
+        print("Ждем 70 секунд...")
+        time.sleep(70)
+        try:
+            message = TempMail.getEmails(tmp, inbox=email)
+        except:
+            print("Ждем еще 20 секунд...")
+            time.sleep(20)
+            try:
+                message = TempMail.getEmails(tmp, inbox=email)
+            except:
+                print("К сожалению получить письмо не получилось...")
+                sys.exit()
+        if message['subject'] == "Подтвердите e-mail":
+            ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
+        else:
+            print("Сообщение не получено...")
+        print("Ссылка для подтверждения e-mail: ")
+        print(ver_link)
 
-    # if email_is_valid:
-    #     print("Ждем 70 секунд...")
-    #     time.sleep(70)
-    #     try:
-    #         message = email.get_message_by_id(email.get_message_id())
-    #         message_subject = email.get_message_subject()
-    #     except:
-    #         print("Ждем еще 20 секунд...")
-    #         time.sleep(20)
-    #         try:
-    #             message = email.get_message_by_id(email.get_message_id())
-    #             message_subject = email.get_message_subject()
-    #         except:
-    #             print("К сожалению получить письмо не получилось...")
-    #             sys.exit()
-    #     if message_subject == "Подтвердите e-mail":
-    #         ver_link = message[message.find('Подтвердить') + 262:message.find('Подтвердить') + 306]
-    #     else:
-    #         print("Сообщение не получено...")
-    #     print("Ссылка для подтверждения e-mail: ")
-    #     print(ver_link)
-    #
-    #     while True:
-    #         try:
-    #             response = requests.get(ver_link)
-    #             if 'Спасибо' in response.text:
-    #                 print('Почта подтверждена. Код отправлен на вашу почту!')
-    #                 break
-    #             else:
-    #                 ver_link = input('Ссылка невалидная, повторите попытку: ')
-    #         except:
-    #             ver_link = input('Ссылка невалидная, повторите попытку: ')
-    #             continue
-    #         input("Нажмите Enter для продолжения...")
-    #
-    # print("Получение тестового кода...")
-    # time.sleep(10)
-    #
-    # message = email.get_message_by_id(email.get_message_id())
-    # print("Ваш тестовый код:")
-    # print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
-    #
-    # lines = 0
-    # file = open("/content/drive/MyDrive/Colab Notebooks/codes.txt", 'a+')
-    # file.write('\n')
-    # file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
-    # with open("/content/drive/MyDrive/Colab Notebooks/codes.txt") as file:
-    #     for line in file:
-    #         lines += 1
-    #     print('Сгенерировано кодов: ' + str(lines))
-    # file.close()
+        while True:
+            try:
+                response = requests.get(ver_link)
+                if 'Спасибо' in response.text:
+                    print('Почта подтверждена. Код отправлен на вашу почту!')
+                    break
+                else:
+                    ver_link = input('Ссылка невалидная, повторите попытку: ')
+            except:
+                ver_link = input('Ссылка невалидная, повторите попытку: ')
+                continue
+            input("Нажмите Enter для продолжения...")
+
+    print("Получение тестового кода...")
+    time.sleep(10)
+
+    message = TempMail.getEmails(tmp, inbox=email)
+    print("Ваш тестовый код:")
+    print(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+
+    lines = 0
+    file = open("/content/drive/MyDrive/Colab Notebooks/codes.txt", 'a+')
+    file.write('\n')
+    file.write(message[message.find('Ваш тестовый код: ') + 18:message.find('Ваш тестовый код: ') + 32])
+    with open("/content/drive/MyDrive/Colab Notebooks/codes.txt") as file:
+        for line in file:
+            lines += 1
+        print('Сгенерировано кодов: ' + str(lines))
+    file.close()
 else:
     print('Невозможно получить тестовый период')
