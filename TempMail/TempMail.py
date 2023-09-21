@@ -131,7 +131,7 @@ class TempMail:
             for email in data["email"]:
                 # Some emails may not have html, so we will check for that
                 emails.append(
-                    Email(email["subject"]))
+                    Email(email["subject"], email["body"]))
             return data
 
     """
