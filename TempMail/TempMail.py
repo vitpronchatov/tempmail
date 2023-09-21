@@ -134,7 +134,7 @@ class TempMail:
                 if "html" in email:
                     new_email = Email(email["from"], email["to"], email["subject"], email["body"], email["html"],
                               email["date"])
-                    subject = new_email.subject
+                    print(new_email.subject)
 
                     emails.append(
                         Email(email["from"], email["to"], email["subject"], email["body"], email["html"],
