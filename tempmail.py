@@ -38,6 +38,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
     time.sleep(100)
     message = TempMail.getEmails(tmp, inbox=email)
     message_subject = TempMail.getEmails_subject(tmp, inbox=email)
+    print(message)
     print(message_subject)
 
     # if email_is_valid:
