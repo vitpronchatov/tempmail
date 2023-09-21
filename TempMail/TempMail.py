@@ -122,6 +122,7 @@ class TempMail:
             if data["token"] == "invalid":
                 raise Exception("Invalid Token")
 
+        print(data)
         if data["email"] is None:
             return ["None"]
         else:
