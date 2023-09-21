@@ -106,7 +106,7 @@ class TempMail:
                 else:
                     emails.append(
                         Email(email["from"], email["to"], email["subject"], email["body"], None, email["date"]))
-            return data
+            return emails
 
     def getEmails_subject(self, inbox):
         if isinstance(inbox, Inbox):
@@ -132,7 +132,7 @@ class TempMail:
                 # Some emails may not have html, so we will check for that
                 emails.append(
                     Email(email["subject"]))
-            return emails
+            return data
 
     """
     checkCustomInbox checks if there are any emails in a custom inbox
