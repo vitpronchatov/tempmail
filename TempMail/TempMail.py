@@ -108,6 +108,36 @@ class TempMail:
                         Email(email["from"], email["to"], email["subject"], email["body"], None, email["date"]))
             return emails
 
+    def getEmails_subject(self, inbox):
+        if isinstance(inbox, Inbox):
+            token = inbox.token
+        else:
+            token = inbox
+
+        s = TempMail.makeHTTPRequest(self, "/auth/" + token)
+        data = json.loads(s)
+
+        # Raise an exception if the token is invalid
+        if "token" in s and "token" in data:
+            if data["token"] == "invalid":
+                raise Exception("Invalid Token")
+
+        # if no emails are found, return an empty list
+        # else return a list of email
+        if data["email"] is None:
+            return ["None"]
+        else:
+            emails = []
+            for email in data["email"]:
+                # Some emails may not have html, so we will check for that
+                if "html" in email:
+                    emails.append(
+                        Email(email["from"], email["to"], email["subject"], email["body"], email["html"], email["date"]))
+                else:
+                    emails.append(
+                        Email(email["from"], email["to"], email["subject"], email["body"], None, email["date"]))
+            return email["subject"]
+
     """
     checkCustomInbox checks if there are any emails in a custom inbox
     and returns a list of Email objects

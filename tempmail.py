@@ -37,9 +37,7 @@ if 'Ваша электронная почта' in requests.get(url).text:
     print("Ждем 70 секунд...")
     time.sleep(70)
     message = TempMail.getEmails(tmp, inbox=email)
-    for word in message:
-        if 'Подтвердите e-mail'.find(str(word)) != -1:
-            print(word)
+    print(email['subject'])
 
     # if email_is_valid:
     #     print("Ждем 70 секунд...")
