@@ -10,8 +10,6 @@ if 'Ваша електронна пошта' in requests.get(url).text:
         "demo_mail": f"{email}"
     })
 
-    print(response.text)
-
     if 'Ваш код вислано на пошту' in response.text:
         print('Пошта підтверджена. Код відправлений на вашу пошту!')
     else:
