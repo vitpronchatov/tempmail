@@ -10,20 +10,22 @@ if 'Ваша електронна пошта' in requests.get(url).text:
         "demo_mail": f"{email}"
     })
 
-    if 'Ваш код відправлений на пошту' in response.text:
-        confirm = input('Введіть отримане посилання для підтвердження e-mail адреси: ')
+    print(response.text)
+
+    #if 'Ваш код вже відправлено на вказану електронну пошту' in response.text:
+    #    confirm = input('Введіть отримане посилання для підтвердження e-mail адреси: ')
         
-        while True:
-            try:
-                response = requests.get(confirm)
-                if 'Дякую' in response.text:
-                    print('Пошта підтверджена. Код відправлений на вашу пошту!')
-                    break
-                else:
-                    confirm = input('Посилання недійсне, повторіть спробу: ')
-            except:
-                confirm = input('Посилання недійсне, повторіть спробу: ')
-                continue
+    #   while True:
+    #        try:
+    #            response = requests.get(confirm)
+    #            if 'Дякую' in response.text:
+    #                print('Пошта підтверджена. Код відправлений на вашу пошту!')
+    #                break
+    #            else:
+    #                confirm = input('Посилання недійсне, повторіть спробу: ')
+    #        except:
+    #            confirm = input('Посилання недійсне, повторіть спробу: ')
+    #            continue
 
 
     else:
